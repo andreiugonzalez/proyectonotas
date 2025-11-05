@@ -20,11 +20,11 @@ html, body, #root {
 }
 .animated-bg .blob {
   position: absolute;
-  width: 28rem;
-  height: 28rem;
+  width: 26rem;
+  height: 26rem;
   border-radius: 50%;
   filter: blur(90px);
-  opacity: .25;
+  opacity: .08;
   mix-blend-mode: screen;
 }
 .animated-bg .blob--1 { background: radial-gradient(circle at 30% 30%, #7c3aed, #1e1b4b); animation: blobFloat1 14s ease-in-out infinite; top: -10%; left: -8%; }
@@ -79,4 +79,16 @@ html, body, #root {
 @keyframes toastIn {
   from { transform: translateY(-6px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+/* Select oscuro para evitar fondo blanco al abrir */
+.select-dark {
+  background-color: rgba(255,255,255,.08);
+  color: #fff;
+}
+.select-dark:focus {
+  background-color: rgba(255,255,255,.12);
+}
+.select-dark option {
+  background-color: #1f2937; /* gris-800 */
+  color: #fff;
 }

@@ -33,11 +33,15 @@ function App() {
       const res = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
+        credentials: 'include'
       })
       const data = await res.json()
       if (!res.ok || !data.ok) throw new Error(data.error || 'Error de inicio de sesión')
-      alert(`Bienvenido, ${data.user?.name || email} 👋`)
+      try {
+        localStorage.setItem('user', JSON.stringify(data.user || { email }))
+      } catch {}
+      window.location.hash = '#/welcome'
     } catch (err) {
       alert(`No se pudo iniciar sesión: ${err.message}`)
     }

@@ -13,6 +13,12 @@ function CrearCuenta() {
   const [showSignConfirm, setShowSignConfirm] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [toast, setToast] = useState(null)
+  // Ubicación Chile
+  const [country, setCountry] = useState('Chile')
+  const [region, setRegion] = useState('')
+  const [commune, setCommune] = useState('')
+  const [regionsData, setRegionsData] = useState([])
+  const [communesForRegion, setCommunesForRegion] = useState([])
 
   const showToast = (type, message) => {
     setToast({ type, message })
@@ -20,9 +26,35 @@ function CrearCuenta() {
     showToast._t = setTimeout(() => setToast(null), 3500)
   }
 
+  // Cargar regiones/comunas desde JSON público
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/chile-regiones-comunas.json')
+        const data = await res.json()
+        setRegionsData(data)
+      } catch (e) {
+        console.error('No se pudo cargar regiones/comunas:', e)
+      }
+    }
+    load()
+  }, [])
+
+  // Cuando cambia la región, cargar comunas asociadas
+  useEffect(() => {
+    if (!region) {
+      setCommunesForRegion([])
+      setCommune('')
+      return
+    }
+    const found = regionsData.find((r) => r.region === region)
+    setCommunesForRegion(found?.comunas || [])
+    setCommune('')
+  }, [region, regionsData])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!name || !lastName || !username || !sex || !birthdate || !email || !password) {
+    if (!name || !lastName || !username || !sex || !birthdate || !email || !password || !country || !region || !commune) {
       showToast('warning', 'Faltan campos por completar')
       return
     }
@@ -39,7 +71,7 @@ function CrearCuenta() {
       const res = await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, lastName, username, sex, birthdate, email, password, termsAccepted })
+        body: JSON.stringify({ name, lastName, username, sex, birthdate, email, password, termsAccepted, country, region, commune })
       })
       const data = await res.json()
       if (!res.ok || !data.ok) throw new Error(data.error || 'Error al crear la cuenta')
@@ -110,6 +142,34 @@ function CrearCuenta() {
                     <div>
                       <label className="text-sm">Nombre de usuario</label>
                       <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="tu_usuario" className="mt-2 w-full bg-transparent border-b border-emerald-200/70 focus:border-white outline-none px-1 py-2 placeholder:text-emerald-100" />
+                    </div>
+
+                    {/* País / Región / Comuna */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="text-sm">País</label>
+                        <select value={country} disabled className="mt-2 w-full bg-transparent border-b border-emerald-200/70 outline-none px-1 py-2">
+                          <option className="bg-emerald-600" value="Chile">Chile</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-sm">Región</label>
+                        <select value={region} onChange={(e) => setRegion(e.target.value)} className="mt-2 w-full bg-transparent border-b border-emerald-200/70 focus:border-white outline-none px-1 py-2">
+                          <option className="bg-emerald-600" value="">Selecciona…</option>
+                          {regionsData.map((r) => (
+                            <option key={r.region} className="bg-emerald-600" value={r.region}>{r.region}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-sm">Comuna</label>
+                        <select value={commune} onChange={(e) => setCommune(e.target.value)} disabled={!region} className="mt-2 w-full bg-transparent border-b border-emerald-200/70 focus:border-white outline-none px-1 py-2">
+                          <option className="bg-emerald-600" value="">Selecciona…</option>
+                          {communesForRegion.map((c) => (
+                            <option key={c} className="bg-emerald-600" value={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
