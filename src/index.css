@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos opcionales para asegurar layout móvil full-height */
+html, body, #root {
+  height: 100%;
+}
+
+/* Fondo animado con blobs suaves */
+.animated-bg {
+  position: relative;
+  overflow: hidden;
+}
+.animated-bg .bg-blobs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.animated-bg .blob {
+  position: absolute;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .25;
+  mix-blend-mode: screen;
+}
+.animated-bg .blob--1 { background: radial-gradient(circle at 30% 30%, #7c3aed, #1e1b4b); animation: blobFloat1 14s ease-in-out infinite; top: -10%; left: -8%; }
+.animated-bg .blob--2 { background: radial-gradient(circle at 70% 70%, #06b6d4, #0f766e); animation: blobFloat2 18s ease-in-out infinite; bottom: -12%; right: -10%; }
+.animated-bg .blob--3 { background: radial-gradient(circle at 50% 20%, #22c55e, #0d9488); animation: blobFloat3 22s ease-in-out infinite; top: 30%; right: 10%; }
+
+@keyframes blobFloat1 {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(40px,-20px) scale(1.08); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes blobFloat2 {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-30px,20px) scale(1.06); }
+  100% { transform: translate(0,0) scale(1); }
+}
+@keyframes blobFloat3 {
+  0% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(20px,30px) scale(1.04); }
+  100% { transform: translate(0,0) scale(1); }
+}
+.content-layer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Toast elegante */
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 50;
+  pointer-events: none;
+}
+.toast {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem .9rem;
+  border-radius: .75rem;
+  color: white;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.2);
+  animation: toastIn .25s ease-out;
+}
+.toast--success { background: linear-gradient(135deg, rgba(16,185,129,.85), rgba(5,150,105,.85)); }
+.toast--warning { background: linear-gradient(135deg, rgba(245,158,11,.85), rgba(217,119,6,.85)); }
+.toast__icon { opacity: .95; }
+.toast__msg { font-size: .9rem; }
+
+@keyframes toastIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
